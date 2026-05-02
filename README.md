@@ -1,1 +1,277 @@
-# netspeed
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>NetSpeed Pro</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="final.css">
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg navbar-dark custom-nav sticky-top">
+<div class="container">
+
+<a class="navbar-brand fw-bold" href="#">⚡ NetSpeed Pro</a>
+
+<button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navMenu">
+<span class="navbar-toggler-icon"></span>
+</button>
+
+<div class="collapse navbar-collapse" id="navMenu">
+
+<ul class="navbar-nav mx-auto">
+<li class="nav-item"><a class="nav-link active" href="#">Home</a></li>
+<li class="nav-item"><a class="nav-link" href="#test">Test</a></li>
+<li class="nav-item"><a class="nav-link" href="#history">History</a></li>
+<li class="nav-item"><a class="nav-link" href="#about">About</a></li>
+</ul>
+
+<div class="d-flex gap-2">
+<button class="btn btn-sm btn-primary" onclick="startTest()">Start</button>
+<button class="btn btn-sm btn-outline-light" onclick="toggleMode()">🌙</button>
+<button class="btn btn-sm btn-outline-danger" onclick="clearHistory()">Clear</button>
+</div>
+
+</div>
+</div>
+</nav>
+
+<!-- MAIN -->
+<div id="test" class="container text-center mt-5 fade-in">
+
+<h1 class="title">Internet Speed Test</h1>
+<p class="subtitle">Click below to test your connection</p>
+
+<div class="test-area" onclick="startTest()">
+<span id="testText">Start Test</span>
+</div>
+
+<p id="status" class="mt-3 text-info"></p>
+
+<div id="loader" class="mt-3 d-none">
+<div class="loader-ring"></div>
+</div>
+
+<div class="row justify-content-center mt-5 g-4">
+
+<div class="col-md-3">
+<div class="glass-card">
+<h6>Ping</h6>
+<p id="ping">-- ms</p>
+</div>
+</div>
+
+<div class="col-md-3">
+<div class="glass-card">
+<h6>Download</h6>
+<p id="download">-- Mbps</p>
+</div>
+</div>
+
+<div class="col-md-3">
+<div class="glass-card">
+<h6>Upload</h6>
+<p id="upload">-- Mbps</p>
+</div>
+</div>
+
+</div>
+
+<p class="mt-3 text-secondary">
+ISP: Jio | Server: RailTel (Nagpur)
+</p>
+
+</div>
+
+<!-- HISTORY -->
+<div id="history" class="container mt-5 fade-in">
+<h4 class="text-center mb-3">Test History</h4>
+
+<div class="table-responsive">
+<table class="table table-dark table-hover text-center">
+<thead>
+<tr>
+<th>Date</th>
+<th>Ping</th>
+<th>Download</th>
+<th>Upload</th>
+</tr>
+</thead>
+<tbody id="historyTable"></tbody>
+</table>
+</div>
+</div>
+
+<!-- ABOUT -->
+<div id="about" class="container mt-5 text-center fade-in">
+<h4>About NetSpeed Pro</h4>
+<p class="text-secondary">
+NetSpeed Pro is a modern UI-based internet speed test tool.
+</p>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer mt-5">
+<div class="container">
+<div class="row">
+
+<div class="col-md-4 mb-3">
+<h5>⚡ NetSpeed Pro</h5>
+<p>Modern internet speed testing platform.</p>
+</div>
+
+<div class="col-md-2">
+<h6>Links</h6>
+<ul>
+<li>Home</li>
+<li>Test</li>
+<li>History</li>
+</ul>
+</div>
+
+<div class="col-md-3">
+<h6>Services</h6>
+<ul>
+<li>Speed Testing</li>
+<li>Network Analysis</li>
+<li>Reports</li>
+</ul>
+</div>
+
+<div class="col-md-3 text-center">
+<h6>Scan QR</h6>
+<img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=NetSpeedPro">
+</div>
+
+</div>
+
+<hr>
+<p class="text-center">© 2026 NetSpeed Pro</p>
+</div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+// Start Test
+function startTest(){
+
+let area = document.querySelector(".test-area");
+let text = document.getElementById("testText");
+
+area.classList.add("active");
+text.innerText = "Testing...";
+
+document.getElementById("loader").classList.remove("d-none");
+
+let status = document.getElementById("status");
+
+status.innerText = "Checking Ping...";
+
+setTimeout(()=>{
+let ping = Math.floor(Math.random()*40)+10;
+document.getElementById("ping").innerText = ping + " ms";
+
+status.innerText = "Testing Download...";
+text.innerText = "Downloading...";
+
+animateValue("download", Math.random()*100);
+
+setTimeout(()=>{
+status.innerText = "Testing Upload...";
+text.innerText = "Uploading...";
+
+animateValue("upload", Math.random()*50);
+
+setTimeout(()=>{
+status.innerText = "Test Completed ✅";
+text.innerText = "Test Again";
+
+area.classList.remove("active");
+document.getElementById("loader").classList.add("d-none");
+
+saveData(
+ping,
+document.getElementById("download").innerText.replace(" Mbps",""),
+document.getElementById("upload").innerText.replace(" Mbps","")
+);
+
+},2000);
+
+},2000);
+
+},1000);
+}
+
+// Smooth value animation
+function animateValue(id, max){
+let el = document.getElementById(id);
+let value = 0;
+
+let interval = setInterval(()=>{
+value += max/20;
+if(value >= max){
+value = max;
+clearInterval(interval);
+}
+el.innerText = value.toFixed(2) + " Mbps";
+},100);
+}
+
+// Save history
+function saveData(ping, download, upload){
+let date = new Date().toLocaleString();
+let history = JSON.parse(localStorage.getItem("speedData")) || [];
+history.push({date, ping, download, upload});
+localStorage.setItem("speedData", JSON.stringify(history));
+loadHistory();
+}
+
+// Load history
+function loadHistory(){
+let history = JSON.parse(localStorage.getItem("speedData")) || [];
+let table = document.getElementById("historyTable");
+table.innerHTML = "";
+
+history.slice().reverse().forEach(item=>{
+table.innerHTML += `
+<tr>
+<td>${item.date}</td>
+<td>${item.ping} ms</td>
+<td>${item.download} Mbps</td>
+<td>${item.upload} Mbps</td>
+</tr>`;
+});
+}
+
+// Dark mode
+function toggleMode(){
+document.body.classList.toggle("light-mode");
+}
+
+// Clear history
+function clearHistory(){
+localStorage.removeItem("speedData");
+loadHistory();
+}
+
+// Load on start
+window.onload = loadHistory;
+
+// Floating particles
+for(let i=0;i<20;i++){
+let p = document.createElement("div");
+p.className = "particle";
+p.style.left = Math.random()*100 + "vw";
+p.style.animationDuration = (5 + Math.random()*5) + "s";
+document.body.appendChild(p);
+}
+</script>
+
+</body>
+</html>
